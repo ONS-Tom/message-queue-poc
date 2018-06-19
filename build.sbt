@@ -104,6 +104,7 @@ lazy val api = (project in file("."))
     fullClasspath in assembly += Attributed.blank(PlayKeys.playPackageAssets.value),
     libraryDependencies ++= Seq(
       filters,
+      "com.newmotion" %% "akka-rabbitmq" % "5.0.0",
       "org.webjars" %% "webjars-play" % "2.5.0-3",
       "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
       "com.outworkers" %% "util-play" % Versions.util,

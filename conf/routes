@@ -5,6 +5,7 @@
 # Route for health check information (in JSON).
 GET     /                       controllers.HomeController.health
 GET     /health                 controllers.HomeController.health
+GET     /events                 controllers.HomeController.getEvents
 
 # CORS
 OPTIONS /*all                   controllers.HomeController.preflight(all: String)
