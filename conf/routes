@@ -1,0 +1,10 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Route for health check information (in JSON).
+GET     /                       controllers.HomeController.health
+GET     /health                 controllers.HomeController.health
+
+# CORS
+OPTIONS /*all                   controllers.HomeController.preflight(all: String)
