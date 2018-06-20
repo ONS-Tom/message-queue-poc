@@ -10,6 +10,3 @@ GET     /v1/events/traceId/:traceId     controllers.v1.EventController.retrieveE
 # Route for health check information (in JSON).
 GET     /                       controllers.HomeController.health
 GET     /health                 controllers.HomeController.health
-
-# CORS
-OPTIONS /*all                   controllers.HomeController.preflight(all: String)
