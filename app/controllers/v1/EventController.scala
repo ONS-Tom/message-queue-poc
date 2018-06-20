@@ -1,6 +1,7 @@
 package controllers.v1
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import controllers.v1.api.EventApi
 import models._

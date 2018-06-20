@@ -1,6 +1,6 @@
 package models
 
-import play.api.libs.json.{JsObject, JsValue, Json, Writes}
+import play.api.libs.json.{ JsObject, JsValue, Json, Writes }
 
 import scala.util.Try
 

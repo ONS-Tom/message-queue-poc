@@ -3,9 +3,9 @@
 # ~~~~
 
 # Events API
-GET     /v1/events/service/:service     controllers.EventController.retrieveEventsForService(service)
-GET     /v1/events/userId/:userId       controllers.EventController.retrieveEventsForUserId(userId)
-GET     /v1/events/traceId/:traceId     controllers.EventController.retrieveEventByTraceId(traceId)
+GET     /v1/events/service/:service     controllers.v1.EventController.retrieveEventsForService(service)
+GET     /v1/events/userId/:userId       controllers.v1.EventController.retrieveEventsForUserId(userId)
+GET     /v1/events/traceId/:traceId     controllers.v1.EventController.retrieveEventByTraceId(traceId)
 
 # Route for health check information (in JSON).
 GET     /                       controllers.HomeController.health

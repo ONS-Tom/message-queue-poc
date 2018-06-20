@@ -1,6 +1,6 @@
 import com.google.inject.AbstractModule
 import config.HBaseRestEventRepositoryConfigLoader
-import play.api.{Configuration, Environment}
+import play.api.{ Configuration, Environment }
 import repository.EventRepository
 import repository.hbase.HBaseRestEventRepository
 

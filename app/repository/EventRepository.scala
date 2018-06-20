@@ -1,6 +1,6 @@
 package repository
 
-import models.{ErrorMessage, Event, TraceId, UserId}
+import models.{ ErrorMessage, Event, TraceId, UserId }
 
 import scala.concurrent.Future
 
