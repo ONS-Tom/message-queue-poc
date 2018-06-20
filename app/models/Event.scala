@@ -1,17 +1,14 @@
 package models
 
-import play.api.libs.json.{ JsObject, JsValue, Json, Writes }
+import play.api.libs.json.{JsObject, JsValue, Json, Writes}
 
-import scala.util.Random
+import scala.util.Try
 
-case class Event(userId: Int, service: String, uuid: String, eventType: String) {
-  override def toString: String = s"$userId, $service, $uuid, $eventType"
+case class Event(userId: String, service: String, traceId: String, eventType: String, timeStamp: Int) {
+  override def toString: String = s"$userId, $service, $traceId, $eventType"
 }
 
 object Event {
-
-  private val services: List[String] = List("bi", "sbr", "ai")
-  private val eventTypes: List[String] = List("search", "edit")
 
   implicit val eventWrites = new Writes[Event] {
     override def writes(e: Event): JsValue = {
@@ -19,19 +16,15 @@ object Event {
       JsObject(Seq(
         "userId" -> Json.toJson(userId),
         "service" -> Json.toJson(service),
-        "uuid" -> Json.toJson(uuid),
-        "eventType" -> Json.toJson(eventType)
+        "traceId" -> Json.toJson(traceId),
+        "eventType" -> Json.toJson(eventType),
+        "timeStamp" -> Json.toJson(timeStamp)
       ))
     }
   }
 
-  def apply(s: String): Event = {
-    val split = s.trim.split(",").toList
-    Event(split(0).toInt, split(1), split(2), split(3))
-  }
-
-  def randomEvent: Event = {
-    val r = scala.util.Random
-    Event(r.nextInt(10000), Random.shuffle(services).head, java.util.UUID.randomUUID.toString, Random.shuffle(eventTypes).head)
+  def validate(s: String): Option[Event] = {
+    val split = s.trim.split(",").toList.map(_.trim)
+    Try(Event(split(0), split(1), split(2), split(3), split(4).toInt)).toOption
   }
 }

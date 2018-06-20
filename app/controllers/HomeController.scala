@@ -6,10 +6,7 @@ import com.newmotion.akka.rabbitmq._
 import models.Event
 import play.api.libs.json.Json
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Controller, _ }
-
-import scala.concurrent.Future
 
 class HomeController extends Controller {
   private[this] val startTime = System.currentTimeMillis()
@@ -25,57 +22,33 @@ class HomeController extends Controller {
     val connection = system.actorOf(ConnectionActor.props(factory), "rabbitmq")
     val exchange = "amq.fanout"
 
-    def setupPublisher(channel: Channel, self: ActorRef) {
-      val queue = channel.queueDeclare().getQueue
-      channel.queueBind(queue, exchange, "")
-    }
-    connection ! CreateChannel(ChannelActor.props(setupPublisher), Some("publisher"))
-
     def setupSubscriber(channel: Channel, self: ActorRef) {
       val queue = channel.queueDeclare().getQueue
       channel.queueBind(queue, exchange, "")
       val consumer = new DefaultConsumer(channel) {
         override def handleDelivery(consumerTag: String, envelope: Envelope, properties: BasicProperties, body: Array[Byte]) {
-          val b = fromBytes(body)
-          events = Event.apply(b) :: events
-          println("received: " + fromBytes(body))
+          val bodyStr = fromBytes(body)
+          println(s"got b from sub: $bodyStr")
+          Event.validate(bodyStr) match {
+            case Some(e) => events = e :: events
+            case None => println("Error, unable to parse message into Event model.")
+          }
         }
       }
       channel.basicConsume(queue, true, consumer)
     }
     connection ! CreateChannel(ChannelActor.props(setupSubscriber), Some("subscriber"))
-
-    Future {
-      def loop(n: Long) {
-        val publisher = system.actorSelection("/user/rabbitmq/publisher")
-
-        def publish(channel: Channel) {
-          channel.basicPublish(exchange, "", null, toBytes(Event.randomEvent.toString))
-        }
-        publisher ! ChannelMessage(publish, dropIfNoChannel = false)
-
-        Thread.sleep(1000)
-        loop(n + 1)
-      }
-      loop(0)
-    }
   }
 
   def fromBytes(x: Array[Byte]) = new String(x, "UTF-8")
-  def toBytes(x: Any) = x.toString.getBytes("UTF-8")
 
   def getEvents = Action {
     Ok(Json.toJson(events))
   }
 
   def health = Action {
-    val uptimeInMillis = uptime()
-    Ok(s"{Status: Ok, Uptime: ${uptimeInMillis}ms, Date and Time: " + new DateTime(startTime) + "}")
-  }
-
-  private def uptime(): Long = {
     val uptimeInMillis = System.currentTimeMillis() - startTime
-    uptimeInMillis
+    Ok(s"{Status: Ok, Uptime: ${uptimeInMillis}ms, Date and Time: " + new DateTime(startTime) + "}")
   }
 
   /*

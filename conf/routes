@@ -2,10 +2,14 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+# Events API
+GET     /v1/events/service/:service     controllers.EventController.retrieveEventsForService(service)
+GET     /v1/events/userId/:userId       controllers.EventController.retrieveEventsForUserId(userId)
+GET     /v1/events/traceId/:traceId     controllers.EventController.retrieveEventByTraceId(traceId)
+
 # Route for health check information (in JSON).
 GET     /                       controllers.HomeController.health
 GET     /health                 controllers.HomeController.health
-GET     /events                 controllers.HomeController.getEvents
 
 # CORS
 OPTIONS /*all                   controllers.HomeController.preflight(all: String)
